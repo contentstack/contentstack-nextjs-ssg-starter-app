@@ -1,0 +1,35 @@
+body {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  line-height: 22px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: bold;
+  letter-spacing: 0.2px;
+}
+
+body h1 {
+  font-size: 44px;
+  line-height: 56px;
+}
+
+body h2 {
+  font-size: 28px;
+  line-height: 34px;
+}
+
+body h3, h4 {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+body a {
+  text-decoration: none;
+  color: #222222;
+}
+
+body p {
+  color: #444444;
+}
