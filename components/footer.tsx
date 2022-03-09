@@ -4,6 +4,7 @@ import parse from 'html-react-parser';
 import { FooterModel } from '../model/footer.model';
 import { onEntryChange } from '../contentstack-sdk';
 import { getFooterRes } from '../helper';
+import Skeleton from 'react-loading-skeleton';
 
 type FooterProp = {
   footer: FooterModel;
@@ -16,7 +17,7 @@ export default function Footer({ footer }: FooterProp) {
     try {
       console.info('fetching footer component live preview data...');
       const footerRes = await getFooterRes();
-      setFooter(footerRes[0][0]);
+      setFooter(footerRes);
     } catch (error) {
       console.error(error);
     }
@@ -26,36 +27,45 @@ export default function Footer({ footer }: FooterProp) {
     onEntryChange(fetchData);
   }, []);
 
+  const footerData = getFooter ? getFooter : undefined;
   return (
-    getFooter && (
-      <footer>
-        <div className='max-width footer-div'>
-          <div className='col-quarter'>
+    <footer>
+      <div className='max-width footer-div'>
+        <div className='col-quarter'>
+          {footerData ? (
             <Link href='/'>
               <a className='logo-tag'>
                 <img
-                  src={footer.logo.url}
-                  alt={footer.title}
-                  title={footer.title}
+                  src={footerData.logo.url}
+                  alt={footerData.title}
+                  title={footerData.title}
                   className='logo footer-logo'
                 />
               </a>
             </Link>
-          </div>
-          <div className='col-half'>
-            <nav>
-              <ul className='nav-ul'>
-                {getFooter.navigation?.link.map((menu) => (
+          ) : (
+            <Skeleton width={150} />
+          )}
+        </div>
+        <div className='col-half'>
+          <nav>
+            <ul className='nav-ul'>
+              {footerData ? (
+                footerData.navigation.link.map((menu) => (
                   <li className='footer-nav-li' key={menu.title}>
                     <Link href={menu.href}>{menu.title}</Link>
                   </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          <div className='col-quarter social-link'>
-            <div className='social-nav'>
-              {getFooter.social?.social_share.map((social) => (
+                ))
+              ) : (
+                <Skeleton width={300} />
+              )}
+            </ul>
+          </nav>
+        </div>
+        <div className='col-quarter social-link'>
+          <div className='social-nav'>
+            {footerData ? (
+              footerData.social?.social_share.map((social) => (
                 <a
                   href={social.link.href}
                   title={social.link.title}
@@ -65,15 +75,20 @@ export default function Footer({ footer }: FooterProp) {
                     <img src={social.icon.url} alt={social.link.title} />
                   )}
                 </a>
-              ))}
-            </div>
+              ))
+            ) : (
+              <Skeleton width={200} />
+            )}
           </div>
         </div>
-        <div className='copyright'>
-          {typeof getFooter.copyright === 'string' &&
-            parse(getFooter.copyright)}
-        </div>
-      </footer>
-    )
+      </div>
+      <div className='copyright'>
+        {footerData && typeof footerData.copyright === 'string' ? (
+          parse(footerData.copyright)
+        ) : (
+          <Skeleton width={500} />
+        )}
+      </div>
+    </footer>
   );
 }

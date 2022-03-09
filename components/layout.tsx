@@ -20,8 +20,8 @@ type Page = {
 type Props = {
   children?: ReactNode;
   page: Page;
-  header: HeaderModel[][];
-  footer: FooterModel[][];
+  header: HeaderModel;
+  footer: FooterModel;
 };
 
 function metaData(seo: Seo) {
@@ -42,8 +42,6 @@ function metaData(seo: Seo) {
 }
 
 export default function Layout({ children, page, header, footer }: Props) {
-  console.log('header from layout', header);
-  console.log('footer from layout', footer);
 
   return (
     <>
@@ -90,9 +88,9 @@ export default function Layout({ children, page, header, footer }: Props) {
           ? metaData(page.seo)
           : null}
       </Head>
-      <Header header={header[0][0]} />
+      <Header header={header} />
       {children}
-      <Footer footer={footer[0][0]} />
+      <Footer footer={footer} />
     </>
   );
 }

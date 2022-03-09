@@ -329,7 +329,6 @@ footer a {
   line-height: 22px;
   letter-spacing: 0.3px;
   margin-bottom: 40px;
-  color: #ffffff;
 }
 
 .blogpost-readmore {
@@ -353,7 +352,6 @@ footer a {
   text-align: center;
   background: #715cdd;
   padding: 63px;
-  color: #fff;
   flex-wrap: wrap;
 }
 
@@ -1118,7 +1116,6 @@ footer a {
     text-align: center;
     background: #715cdd;
     padding: 63px;
-    color: #fff;
     flex-wrap: nowrap;
   }
 

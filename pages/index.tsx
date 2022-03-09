@@ -1,27 +1,40 @@
-import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { getAllEntries } from '../helper'
+import React from 'react';
+import type { GetStaticProps, NextPage } from 'next';
+import { getPageRes } from '../helper';
+import RenderComponents from '../components/render-components';
+import { Page } from '../model/page.model';
 
-const Home: NextPage = () => {
+interface PageProps {
+  page: Page;
+}
+
+const Home: NextPage<PageProps> = ({ page }) => {
   return (
-    <div>
-      home Page
-    </div>
-  )
-}
+    <RenderComponents
+      pageComponents={page}
+      blogPost={undefined}
+      entryUid={page.uid}
+      contentTypeUid='page'
+      locale={page.locale}
+    />
+  );
+};
 
-export default Home
+export default Home;
 
-export const getStaticProps: GetStaticProps = async context => {
-  return {
-    props: {}, // will be passed to the page component as props
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const res: Page = await getPageRes('/');
+    if (!res) throw new Error('Not found');
+
+    return {
+      props: { page: res },
+      revalidate: 10,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      notFound: true,
+    };
   }
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  let enrtyPaths = await getAllEntries();
-  enrtyPaths = enrtyPaths.map((enrty)=> enrty.url !== "/blog" && {params:{title:enrty.title, url:enrty.url}})
-  return {
-    paths: [{params}],
-    fallback: true // false or 'blocking'
-  };
-}
+};
