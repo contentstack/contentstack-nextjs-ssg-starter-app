@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import parse from 'html-react-parser';
-// import Tooltip from './tool-tip'
+import Tooltip from './tool-tip';
 import { onEntryChange } from '../contentstack-sdk';
 import { getHeaderRes } from '../helper';
 import { HeaderModel } from '../model/header.model';
@@ -28,7 +28,7 @@ export default function Header({ header }: HeaderProp) {
   }
 
   useEffect(() => {
-    onEntryChange(fetchData);
+    onEntryChange(() => fetchData());
   }, []);
   const headerData = getHeader ? getHeader : undefined;
   return (
@@ -36,7 +36,9 @@ export default function Header({ header }: HeaderProp) {
       <div className='note-div'>
         {headerData?.notification_bar.show_announcement ? (
           typeof headerData.notification_bar.announcement_text === 'string' && (
-            <div>{parse(headerData.notification_bar.announcement_text)}</div>
+            <div {...headerData.notification_bar.$.announcement_text}>
+              {parse(headerData.notification_bar.announcement_text)}
+            </div>
           )
         ) : (
           <Skeleton />
@@ -52,6 +54,7 @@ export default function Header({ header }: HeaderProp) {
                   src={headerData.logo.url}
                   alt={headerData.title}
                   title={headerData.title}
+                  {...headerData.logo.$.url}
                 />
               </a>
             </Link>
@@ -70,7 +73,11 @@ export default function Header({ header }: HeaderProp) {
                 const className =
                   router.asPath === list.page_reference[0].url ? 'active' : '';
                 return (
-                  <li key={list.label} className='nav-li'>
+                  <li
+                    key={list.label}
+                    className='nav-li'
+                    {...list.page_reference[0].$.label}
+                  >
                     <Link href={list.page_reference[0].url}>
                       <a className={className}>{list.label}</a>
                     </Link>
@@ -84,11 +91,11 @@ export default function Header({ header }: HeaderProp) {
         </nav>
 
         <div className='json-preview'>
-          {/* <Tooltip content="JSON Preview" direction="top"> */}
-          <span data-bs-toggle='modal' data-bs-target='#staticBackdrop'>
-            <img src='/json.svg' alt='JSON Preview icon' />
-          </span>
-          {/* </Tooltip> */}
+          <Tooltip content='JSON Preview' direction='top'>
+            <span data-bs-toggle='modal' data-bs-target='#staticBackdrop'>
+              <img src='/json.svg' alt='JSON Preview icon' />
+            </span>
+          </Tooltip>
         </div>
       </div>
     </header>

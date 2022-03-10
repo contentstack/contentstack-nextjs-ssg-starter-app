@@ -13,6 +13,7 @@ export interface BlogPostModel {
     date: string;
     featured_image: Img;
     related_post: {
+        $: any;
         title: string;
         body: string;
     };

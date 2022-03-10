@@ -24,7 +24,7 @@ export default function Footer({ footer }: FooterProp) {
   }
 
   useEffect(() => {
-    onEntryChange(fetchData);
+    onEntryChange(() => fetchData());
   }, []);
 
   const footerData = getFooter ? getFooter : undefined;
@@ -39,6 +39,7 @@ export default function Footer({ footer }: FooterProp) {
                   src={footerData.logo.url}
                   alt={footerData.title}
                   title={footerData.title}
+                  {...footer.logo.$?.url}
                   className='logo footer-logo'
                 />
               </a>
@@ -52,7 +53,7 @@ export default function Footer({ footer }: FooterProp) {
             <ul className='nav-ul'>
               {footerData ? (
                 footerData.navigation.link.map((menu) => (
-                  <li className='footer-nav-li' key={menu.title}>
+                  <li className='footer-nav-li' key={menu.title} {...menu.$?.title}>
                     <Link href={menu.href}>{menu.title}</Link>
                   </li>
                 ))
@@ -72,7 +73,11 @@ export default function Footer({ footer }: FooterProp) {
                   key={social.link.title}
                 >
                   {social.icon && (
-                    <img src={social.icon.url} alt={social.link.title} />
+                    <img
+                      src={social.icon.url}
+                      alt={social.link.title}
+                      {...social.icon.$?.url}
+                    />
                   )}
                 </a>
               ))
@@ -82,13 +87,15 @@ export default function Footer({ footer }: FooterProp) {
           </div>
         </div>
       </div>
-      <div className='copyright'>
-        {footerData && typeof footerData.copyright === 'string' ? (
-          parse(footerData.copyright)
-        ) : (
+      {footerData && typeof footerData.copyright === 'string' ? (
+        <div className='copyright' {...footer.$?.copyright}>
+          {parse(footerData.copyright)}
+        </div>
+      ) : (
+        <div className='copyright'>
           <Skeleton width={500} />
-        )}
-      </div>
+        </div>
+      )}
     </footer>
   );
 }

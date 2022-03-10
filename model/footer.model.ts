@@ -1,29 +1,18 @@
+import { Img, Link } from "./page.model";
+
 export interface FooterModel {
+    $: any;
     uid: string;
     title: string
     copyright: string;
-    logo: {
-        uid: string;
-        title: string;
-        url: string;
-    };
+    logo: Img
     navigation: {
-        link: {
-            title: string;
-            href: string;
-        }[]
+        link: Link[]
     };
     social: {
         social_share: {
-            icon: {
-                uid: string;
-                title: string;
-                url: string;
-            };
-            link: {
-                title: string;
-                href: string;
-            }
+            icon: Img;
+            link: Link
         }[]
     }
 }

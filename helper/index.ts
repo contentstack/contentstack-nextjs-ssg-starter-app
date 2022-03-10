@@ -6,8 +6,10 @@ import { AllEntries } from '../model/entries.model';
 import { Page } from '../model/page.model';
 import { BlogPostModel } from '../model/blogpost.model';
 
-const liveEdit = process.env.CONTENTSTACK_LIVE_EDIT_TAGS === 'true';
-console.log(liveEdit);
+// const liveEdit = process.env.CONTENTSTACK_LIVE_EDIT_TAGS;
+
+const liveEdit = true;
+console.log("live edits",typeof liveEdit);
 
 
 export const getHeaderRes = async (): Promise<HeaderModel> => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { GetStaticProps, NextPage } from 'next';
 import { getPageRes, getBlogListRes } from '../../helper';
 import { Page } from '../../model/page.model';
@@ -7,16 +7,32 @@ import RenderComponents from '../../components/render-components';
 import BlogList from '../../components/blog-list';
 import Skeleton from 'react-loading-skeleton';
 import ArchiveRelative from '../../components/archive-relative';
+import { onEntryChange } from '../../contentstack-sdk';
 
 interface BlogProps {
   page: Page;
   post: BlogPostModel[];
   archivePost: BlogPostModel[];
+  pageUrl: string;
 }
 
-const Blog: NextPage<BlogProps> = ({ page, post, archivePost }) => {
+const Blog: NextPage<BlogProps> = ({ page, post, archivePost, pageUrl }) => {
   const [getEntry, setEntry] = useState(page);
-  const [getList, setList] = useState({ archive: archivePost, list: post });
+  const [getList] = useState({ archive: archivePost, list: post });
+
+  async function fetchData() {
+    try {
+      console.info('fetching live preview data...');
+      const bannerRes = await getPageRes(pageUrl);
+      setEntry(bannerRes);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    onEntryChange(fetchData);
+  }, []);
 
   return (
     <>
@@ -60,7 +76,7 @@ export default Blog;
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const resPage:Page = await getPageRes('/blog');
+    const resPage: Page = await getPageRes('/blog');
     const resBlog: BlogPostModel[] = await getBlogListRes();
     if (!resPage || !resBlog) throw new Error('Not found');
     const archived: BlogPostModel[] = [];
@@ -75,7 +91,12 @@ export const getStaticProps: GetStaticProps = async () => {
     });
 
     return {
-      props: { page: resPage, post: blogLists, archivePost: archived },
+      props: {
+        page: resPage,
+        post: blogLists,
+        archivePost: archived,
+        pageUrl: '/blog',
+      },
       revalidate: 10,
     };
   } catch (error) {

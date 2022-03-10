@@ -14,7 +14,7 @@ type GetEntry = {
 type GetEntryByUrl = {
     entryUrl: string | undefined;
     contentTypeUid: string;
-    referenceFieldPath: string[] | undefined; 
+    referenceFieldPath: string[] | undefined;
     jsonRtePath: string[] | undefined;
 
 }
@@ -31,7 +31,7 @@ const Stack = contentstack.Stack({
     delivery_token: envConfig.CONTENTSTACK_DELIVERY_TOKEN,
     environment: envConfig.CONTENTSTACK_ENVIRONMENT,
     live_preview: {
-        enable: envConfig.CONTENTSTACK_LIVE_PREVIEW,
+        enable: envConfig.CONTENTSTACK_LIVE_PREVIEW === "true",
         management_token: envConfig.CONTENTSTACK_MANAGEMENT_TOKEN,
         host: envConfig.CONTENTSTACK_API_HOST,
     }
@@ -45,6 +45,7 @@ if (envConfig.CONTENTSTACK_API_HOST) {
 ContentstackLivePreview.init({
     //@ts-ignore
     stackSdk: Stack,
+    debug:true,
     clientUrlParams: {
         host: envConfig.CONTENTSTACK_APP_HOST,
     },
@@ -56,6 +57,7 @@ ContentstackLivePreview.init({
 });
 
 export const { onEntryChange } = ContentstackLivePreview;
+
 
 const renderOption = {
     span: (node: any, next: any) => next(node.children),

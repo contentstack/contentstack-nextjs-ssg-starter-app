@@ -20,12 +20,13 @@ export default function HeroBannerComponent({ hero_banner }: HeroProps) {
         style={{ color: hero_banner.text_color || '#222222' }}
       >
         {hero_banner.banner_title && (
-          <h1 className='hero-title'>{hero_banner.banner_title}</h1>
+          <h1 className='hero-title' {...hero_banner.$.banner_title}>{hero_banner.banner_title}</h1>
         )}
         {hero_banner.banner_description ? (
           <p
             className='hero-description'
             style={{ color: hero_banner.text_color || '#222222' }}
+            {...hero_banner.$.banner_description}
           >
             {hero_banner?.banner_description}
           </p>
@@ -34,7 +35,7 @@ export default function HeroBannerComponent({ hero_banner }: HeroProps) {
         )}
         {hero_banner.call_to_action.title && hero_banner.call_to_action.href ? (
           <Link href={hero_banner?.call_to_action.href}>
-            <a className='btn tertiary-btn'>
+            <a className='btn tertiary-btn' {...hero_banner.call_to_action.$.title}>
               {hero_banner?.call_to_action.title}
             </a>
           </Link>
@@ -46,6 +47,7 @@ export default function HeroBannerComponent({ hero_banner }: HeroProps) {
         <img
           alt={hero_banner.banner_image.filename}
           src={hero_banner.banner_image.url}
+          {...hero_banner.banner_image.$.url}
         />
       ) : (
         ''

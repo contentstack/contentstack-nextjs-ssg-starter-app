@@ -7,20 +7,35 @@ export default function SectionBucket(props) {
   return (
     <div className='member-main-section'>
       <div className='member-head'>
-        {section.title_h2 && <h2>{section.title_h2}</h2>}
-        {section.description && <p>{section.description}</p>}
+        {section.title_h2 && (
+          <h2 {...section.$.title_h2}>{section.title_h2}</h2>
+        )}
+        {section.description && (
+          <p {...section.$.description}>{section.description}</p>
+        )}
       </div>
       <div className='member-section'>
         {section.buckets?.map((bucket, index) => (
           <div className='content-section' key={index}>
-            {bucket.icon && <img src={bucket.icon.url} alt='bucket icon' />}
+            {bucket.icon && (
+              <img
+                {...bucket.icon.$.url}
+                src={bucket.icon.url}
+                alt='bucket icon'
+              />
+            )}
 
-            {bucket.title_h3 ? <h3>{bucket.title_h3}</h3> : ''}
+            {bucket.title_h3 ? (
+              <h3 {...bucket.$.title_h3}>{bucket.title_h3}</h3>
+            ) : (
+              ''
+            )}
             {typeof bucket.description === 'string' && (
-              <div>{parse(bucket.description)}</div>
+              <div {...bucket.$.description}>{parse(bucket.description)}</div>
             )}
             {bucket.call_to_action.title ? (
               <Link
+                {...bucket.call_to_action.$.href}
                 href={
                   bucket.call_to_action.href ? bucket.call_to_action.href : '#'
                 }

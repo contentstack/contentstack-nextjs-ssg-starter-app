@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// import dynamic from 'next/dynamic';
-// import Tooltip from './tool-tip';
+import dynamic from 'next/dynamic';
+import Tooltip from './tool-tip';
 
-// const DynamicReactJson = dynamic(import('react-json-view'), { ssr: false });
+const DynamicReactJson = dynamic(import('react-json-view'), { ssr: false });
 
 function filterObject(inputObject) {
   const unWantedProps = [
@@ -42,31 +42,31 @@ const DevTools = ({ response }) => {
 
   return (
     <div
-      className="modal fade"
-      id="staticBackdrop"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
+      className='modal fade'
+      id='staticBackdrop'
+      data-bs-backdrop='static'
+      data-bs-keyboard='false'
       //@ts-ignore
-      tabIndex="-1"
-      aria-labelledby="staticBackdropLabel"
-      aria-hidden="true"
-      role="dialog"
+      tabIndex='-1'
+      aria-labelledby='staticBackdropLabel'
+      aria-hidden='true'
+      role='dialog'
     >
       <div
-        className="modal-dialog .modal-lg modal-dialog-centered modal-dialog-scrollable"
-        role="document"
+        className='modal-dialog .modal-lg modal-dialog-centered modal-dialog-scrollable'
+        role='document'
       >
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2 className="devtools-modal-title" id="staticBackdropLabel">
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h2 className='devtools-modal-title' id='staticBackdropLabel'>
               JSON Preview
             </h2>
             <span
-              className="json-copy"
+              className='json-copy'
               onClick={(e) => copyObject(JSON.stringify(filteredJson))}
-              aria-hidden="true"
+              aria-hidden='true'
             >
-              {/* <Tooltip
+              <Tooltip
                 content={forceUpdate === 0 ? 'Copy' : 'Copied'}
                 direction="top"
                 dynamic
@@ -74,38 +74,38 @@ const DevTools = ({ response }) => {
                 status={forceUpdate}
               >
                 <img src="/copy.svg" alt="copy icon" />
-              </Tooltip> */}
+              </Tooltip>
             </span>
             <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+              type='button'
+              className='btn-close'
+              data-bs-dismiss='modal'
+              aria-label='Close'
             />
           </div>
-          <div className="modal-body">
+          <div className='modal-body'>
             {response ? (
-              <pre id="jsonViewer">
-                {/* {response && (
+              <pre id='jsonViewer'>
+                {response && (
                   <DynamicReactJson
                     src={filteredJson}
                     collapsed={1}
-                    name="response"
+                    name='response'
                     displayDataTypes={false}
                     enableClipboard={false}
                     style={{ color: '#C8501E' }}
                   />
-                )} */}
+                )}
               </pre>
             ) : (
               ''
             )}
           </div>
-          <div className="modal-footer">
+          <div className='modal-footer'>
             <button
-              type="button"
-              className="btn tertiary-btn modal-btn"
-              data-bs-dismiss="modal"
+              type='button'
+              className='btn tertiary-btn modal-btn'
+              data-bs-dismiss='modal'
             >
               Close
             </button>

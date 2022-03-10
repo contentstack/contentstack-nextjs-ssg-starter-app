@@ -13,12 +13,13 @@ export default function BlogBanner({ blog_banner }) {
         style={{ color: blog_banner.text_color || '#222222' }}
       >
         {blog_banner.banner_title && (
-          <h1 className='hero-title'>{blog_banner.banner_title}</h1>
+          <h1 className='hero-title' {...blog_banner.$?.banner_title}>{blog_banner.banner_title}</h1>
         )}
 
         {blog_banner.banner_description && (
           <p
             className='hero-description'
+            {...blog_banner.$?.banner_description}
             style={{ color: blog_banner.text_color || '#222222' }}
           >
             {blog_banner.banner_description}

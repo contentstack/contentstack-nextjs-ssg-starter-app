@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { getBlogListRes, getBlogPostRes, getPageRes } from '../../helper';
 import RenderComponents from '../../components/render-components';
@@ -7,14 +7,33 @@ import { Page } from '../../model/page.model';
 import Skeleton from 'react-loading-skeleton';
 import ArchiveRelative from '../../components/archive-relative';
 import moment from 'moment';
-import parse from "html-react-parser";
+import parse from 'html-react-parser';
+import { onEntryChange } from '../../contentstack-sdk';
 
 interface BlogPostProps {
   page: Page;
   blogPost: BlogPostModel;
+  pageUrl: string;
 }
-const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost }) => {
+const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost, pageUrl }) => {
   const [getEntry, setEntry] = useState({ banner: page, post: blogPost });
+
+  async function fetchData() {
+    try {
+      console.info('fetching live preview data...');
+      const entryRes = await getBlogPostRes(pageUrl);
+      const bannerRes = await getPageRes('/blog');
+
+      setEntry({ banner: bannerRes, post: entryRes });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    onEntryChange(fetchData);
+  }, [blogPost]);
+
   const { post, banner } = getEntry;
   return (
     <>
@@ -31,14 +50,14 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost }) => {
       )}
       <div className='blog-container'>
         <article className='blog-detail'>
-          {post.title ? (
+          {post && post.title ? (
             <h2 {...post.$?.title}>{post.title}</h2>
           ) : (
             <h2>
               <Skeleton />
             </h2>
           )}
-          {post.date ? (
+          {post && post.date ? (
             <p {...post.$?.date}>
               {moment(post.date).format('ddd, MMM D YYYY')},{' '}
               <strong {...post.author[0].$?.title}>
@@ -50,7 +69,7 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost }) => {
               <Skeleton width={300} />
             </p>
           )}
-          {post.body ? (
+          {post && post.body ? (
             <div {...post.$?.body}>{parse(post.body)}</div>
           ) : (
             <Skeleton height={800} width={600} />
@@ -74,7 +93,7 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost }) => {
                 </h2>
               )
             }
-            {post.related_post ? (
+            {post && post.related_post ? (
               <ArchiveRelative
                 {...post.$?.related_post}
                 blogs={post.related_post}
@@ -92,11 +111,14 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost }) => {
 export default BlogPost;
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
-    //@ts-ignore
-    const blogRes = await getBlogPostRes(`/blog/${params.post}`);
+    const blogRes = await getBlogPostRes(`/blog/${params?.post}`);
     const pageRes = await getPageRes('/blog');
     return {
-      props: { page: pageRes, blogPost: blogRes },
+      props: {
+        page: pageRes,
+        blogPost: blogRes,
+        pageUrl: `/blog/${params?.post}`,
+      },
       revalidate: 10,
     };
   } catch (error) {
