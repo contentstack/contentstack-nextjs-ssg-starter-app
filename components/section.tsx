@@ -1,8 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { Section } from '../model/page.model';
 
-export default function Section(props) {
-  const { section } = props;
+interface SectionProps {
+  section: Section;
+}
+
+export default function Sections({ section }: SectionProps) {
   function contentSection(key) {
     return (
       <div className='home-content' key={key}>

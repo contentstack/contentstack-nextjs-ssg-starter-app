@@ -5,19 +5,43 @@ import { FooterModel } from '../model/footer.model';
 import { onEntryChange } from '../contentstack-sdk';
 import { getFooterRes } from '../helper';
 import Skeleton from 'react-loading-skeleton';
+import { AllEntries } from '../model/entries.model';
 
 type FooterProp = {
   footer: FooterModel;
+  entries: AllEntries[];
 };
 
-export default function Footer({ footer }: FooterProp) {
+export default function Footer({ footer, entries }: FooterProp) {
   const [getFooter, setFooter] = useState(footer);
+
+  function buildNavigation(ent, ft) {
+    let newFooter = { ...ft };
+    if (ent.length !== newFooter.navigation.link.length) {
+      ent.forEach((entry) => {
+        const fFound = newFooter?.navigation.link.find(
+          (nlink) => nlink.title === entry.title
+        );
+        if (!fFound) {
+          newFooter.navigation.link?.push({
+            title: entry.title,
+            href: entry.url,
+            $: entry.$,
+          });
+        }
+      });
+    }
+    return newFooter;
+  }
 
   async function fetchData() {
     try {
-      console.info('fetching footer component live preview data...');
-      const footerRes = await getFooterRes();
-      setFooter(footerRes);
+      if (footer && entries) {
+        console.info('fetching footer component live preview data...');
+        const footerRes = await getFooterRes();
+        const newfooter = buildNavigation(entries, footerRes);
+        setFooter(newfooter);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -25,14 +49,15 @@ export default function Footer({ footer }: FooterProp) {
 
   useEffect(() => {
     onEntryChange(() => fetchData());
-  }, []);
+  }, [footer]);
 
   const footerData = getFooter ? getFooter : undefined;
+
   return (
     <footer>
       <div className='max-width footer-div'>
         <div className='col-quarter'>
-          {footerData ? (
+          {footerData && footerData.logo ? (
             <Link href='/'>
               <a className='logo-tag'>
                 <img
@@ -53,7 +78,11 @@ export default function Footer({ footer }: FooterProp) {
             <ul className='nav-ul'>
               {footerData ? (
                 footerData.navigation.link.map((menu) => (
-                  <li className='footer-nav-li' key={menu.title} {...menu.$?.title}>
+                  <li
+                    className='footer-nav-li'
+                    key={menu.title}
+                    {...menu.$?.title}
+                  >
                     <Link href={menu.href}>{menu.title}</Link>
                   </li>
                 ))

@@ -42,7 +42,7 @@ export interface SectionWithBuckets {
     }[];
     title_h2: string;
     description: string;
-    bucket_tabular:boolean;
+    bucket_tabular: boolean;
 }
 
 export interface FromBlog {
@@ -55,13 +55,13 @@ export interface FromBlog {
         body: string;
         date: string;
         title: string;
-    }[]
+        featured_image: Img
+    }[];
 }
 
 export interface SectionWithCards {
     $: any;
     cards: {
-        $: any;
         title_h3: string;
         description: string;
         call_to_action: Link;

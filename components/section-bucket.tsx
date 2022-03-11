@@ -1,9 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import parse from 'html-react-parser';
+import { SectionWithBuckets } from '../model/page.model';
 
-export default function SectionBucket(props) {
-  const { section } = props;
+interface SectionBucketProps {
+  section: SectionWithBuckets
+}
+
+export default function SectionBucket({section}: SectionBucketProps) {
   return (
     <div className='member-main-section'>
       <div className='member-head'>

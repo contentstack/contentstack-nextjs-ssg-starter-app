@@ -58,15 +58,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   //@ts-ignore
-  const entryPaths: AllEntries[] = await getAllEntries();
+  const entryPaths: AllEntries[] = await getAllEntries();  
   const paths: { params: { page: string } }[] = [];
   entryPaths.forEach((entry) => {
     if (entry.url !== '/blog' && entry.url !== '/')
       paths.push({ params: { page: entry.url.toString() } });
   });
-
+  
   return {
     paths,
-    fallback: true,
+    fallback: "blocking",
   };
 };
