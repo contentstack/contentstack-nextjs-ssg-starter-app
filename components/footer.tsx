@@ -9,7 +9,7 @@ import { AllEntries } from '../model/entries.model';
 
 type FooterProp = {
   footer: FooterModel;
-  entries: AllEntries[];
+  entries: AllEntries[] | {};
 };
 
 export default function Footer({ footer, entries }: FooterProp) {
@@ -36,7 +36,7 @@ export default function Footer({ footer, entries }: FooterProp) {
 
   async function fetchData() {
     try {
-      if (footer && entries) {
+      if (footer && entries != {}) {
         console.info('fetching footer component live preview data...');
         const footerRes = await getFooterRes();
         const newfooter = buildNavigation(entries, footerRes);

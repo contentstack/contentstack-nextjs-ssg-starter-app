@@ -79,7 +79,7 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost, pageUrl }) => {
           <div className='related-post'>
             {
               //@ts-ignore
-              banner && banner.page_components[2].widget ? (
+              banner && banner?.page_components[2].widget ? (
                 //@ts-ignore
                 <h2 {...banner?.page_components[2].widget.$?.title_h2}>
                   {
@@ -111,15 +111,22 @@ const BlogPost: NextPage<BlogPostProps> = ({ page, blogPost, pageUrl }) => {
 export default BlogPost;
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
-    const blogRes = await getBlogPostRes(`/blog/${params?.post}`);
+    if (!params || !params.post) return { props: { post: null, pageUrl: '' } };
+    const paramsPath = params.post.includes('/blog')
+      ? `${params.post}`
+      : `/blog/${params?.post}`;
+      
+    const blogRes = await getBlogPostRes(paramsPath);
     const pageRes = await getPageRes('/blog');
+
+    if (!blogRes || !pageRes) throw 'Error 404';
     return {
       props: {
         page: pageRes,
         blogPost: blogRes,
-        pageUrl: `/blog/${params?.post}`,
+        pageUrl: paramsPath,
       },
-      revalidate: 10,
+      revalidate: 1000,
     };
   } catch (error) {
     console.error(error);

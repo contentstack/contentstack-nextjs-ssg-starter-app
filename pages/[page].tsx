@@ -5,6 +5,7 @@ import RenderComponents from '../components/render-components';
 import { Page } from '../model/page.model';
 import { AllEntries } from '../model/entries.model';
 import { onEntryChange } from '../contentstack-sdk';
+import Skeleton from 'react-loading-skeleton';
 
 interface PageProps {
   page: Page;
@@ -26,27 +27,52 @@ const Pages: NextPage<PageProps> = ({ page, pageUrl }) => {
 
   useEffect(() => {
     onEntryChange(fetchData);
-  }, []);
+  }, [page]);
 
-  return (
+  return getEntry ? (
     <RenderComponents
       pageComponents={getEntry}
-      blogPost={undefined}
+      blogPost={null}
       entryUid={getEntry?.uid}
       contentTypeUid='page'
       locale={getEntry?.locale}
     />
+  ) : (
+    <Skeleton height={300} count={3} />
   );
 };
 
 export default Pages;
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  //@ts-ignore
+  const entryPaths: AllEntries[] = await getAllEntries();
+  const paths: { params: { page: string } }[] = [];
+  entryPaths.forEach((entry) => {
+    if (entry.url !== '/blog' && entry.url !== '/')
+      paths.push({ params: { page: entry.url.toString() } });
+  });
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
-    const res = await getPageRes(`/${params?.page}`);
+    if (!params || !params.page) return { props: { page: {}, pageUrl:"" } };
+    const paramsPath = params?.page.includes('/')
+      ? `${params.page}`
+      : `/${params?.page}`;
+    const res: Page = await getPageRes(`${paramsPath}`);
+    if (!res) throw 'Error 404';
     return {
-      props: { page: res, pageUrl: `/${params?.page}` },
-      revalidate: 10,
+      props: {
+        page: res,
+        pageUrl: paramsPath,
+      },
+      revalidate: 1000,
     };
   } catch (error) {
     console.error(error);
@@ -54,19 +80,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       notFound: true,
     };
   }
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  //@ts-ignore
-  const entryPaths: AllEntries[] = await getAllEntries();  
-  const paths: { params: { page: string } }[] = [];
-  entryPaths.forEach((entry) => {
-    if (entry.url !== '/blog' && entry.url !== '/')
-      paths.push({ params: { page: entry.url.toString() } });
-  });
-  
-  return {
-    paths,
-    fallback: "blocking",
-  };
 };

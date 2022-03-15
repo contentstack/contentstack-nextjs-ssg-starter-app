@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
   return (
-    <Html>
+    <Html lang="en">
       <Head>
         <link rel='preconnect' href='https://fonts.gstatic.com' />
         <link
@@ -27,20 +27,9 @@ export default function Document() {
           integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM'
           crossOrigin='anonymous'
         />
-        <meta
-          name='application-name'
-          content='Contentstack-Nextjs-Starter-App'
-        />
-        <meta charSet='utf-8' />
-        <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
-        <meta
-          name='viewport'
-          content='width=device-width,initial-scale=1,minimum-scale=1'
-        />
         <link rel='manifest' href='/manifest.json' />
         <link href='/favicon.ico' rel='icon' type='public/ico' sizes='16x16' />
         <link rel='apple-touch-icon' href='/path/to/apple-touch-icon.png' />
-        <meta name='theme-color' content='#317EFB' />
       </Head>
       <body>
         <Main />

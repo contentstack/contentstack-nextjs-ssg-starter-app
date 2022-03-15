@@ -87,6 +87,15 @@ export interface SectionWithHtmlCode {
     description: string;
     html_code_alignment: string;
 }
+
+export interface Widget {
+    $: any;
+    widget: {
+        title_h2: string;
+        type: string;
+        $: any
+    }
+}
 export interface Page {
     $: any;
     title: string;
@@ -96,13 +105,14 @@ export interface Page {
     locale: string;
     page_components: [
         {
-            section: Section,
-            our_team: OurTeam,
-            from_blog: FromBlog,
-            hero_banner: HeroBanner,
-            section_with_cards: SectionWithCards,
-            section_with_buckets: SectionWithBuckets,
-            section_with_html_code: SectionWithHtmlCode
+            widget: Widget;
+            section: Section;
+            our_team: OurTeam;
+            from_blog: FromBlog;
+            hero_banner: HeroBanner;
+            section_with_cards: SectionWithCards;
+            section_with_buckets: SectionWithBuckets;
+            section_with_html_code: SectionWithHtmlCode;
         }
     ];
 }

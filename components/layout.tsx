@@ -4,44 +4,20 @@ import { FooterModel } from '../model/footer.model';
 
 import Header from './header';
 import Footer from './footer';
-import Head from 'next/head';
 import DevTools from '../components/devtools';
 import { AllEntries } from '../model/entries.model';
 import { BlogPostModel } from '../model/blogpost.model';
-
-type Seo = {
-  meta_title: String;
-  meta_description: String;
-  keywords: String;
-  enable_search_indexing: boolean;
-};
-
-type Page = {
-  seo: Seo;
-};
+import { Page } from '../model/page.model';
+import { getAllEntries } from '../helper';
 
 type Props = {
   children?: ReactNode;
   page: Page;
   header: HeaderModel;
   footer: FooterModel;
-  entries: AllEntries[];
+  entries: Page[];
   blogList: BlogPostModel[];
   blogPost: BlogPostModel;
-};
-
-const metaData = (seo: Seo) => {
-  const metaArr = [];
-  for (const key in seo) {
-    if (seo.enable_search_indexing) {
-      //@ts-ignore
-      metaArr.push(<meta name={key.includes('meta_') ?
-       key.split('meta_')[1] : key} content={seo[key]}
-       key={key} />
-      );
-    }
-  }
-  return metaArr;
 };
 
 export default function Layout({
@@ -49,17 +25,17 @@ export default function Layout({
   page,
   header,
   footer,
-  entries,
   blogList,
   blogPost,
+  entries,
 }: Props) {
   const [getLayout, setLayout] = useState({ header, footer });
 
   let jsonPreview = {
     header: header,
     footer: footer,
-    page: page,
   };
+  if (page) jsonPreview['page'] = page;
   if (blogList) jsonPreview['blogList'] = blogList;
   if (blogPost) jsonPreview['blogPost'] = blogPost;
 
@@ -96,18 +72,14 @@ export default function Layout({
   }
 
   useEffect(() => {
-    if (entries && footer && header) {
+    if (footer && header && entries) {
       const [newHeader, newFooter] = buildNavigation(entries, header, footer);
       setLayout({ header: newHeader, footer: newFooter });
     }
-  }, [header, footer, entries]);
+  }, [header, footer]);
 
   return (
     <>
-      <Head>
-        <title>Contentstack-Nextjs-SSG-Starter-App</title>
-        {page?.seo && page.seo.enable_search_indexing && metaData(page.seo)}
-      </Head>
       <Header header={getLayout.header} entries={entries} />
       <DevTools response={jsonPreview} />
       {children}

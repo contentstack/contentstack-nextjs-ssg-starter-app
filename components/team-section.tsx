@@ -10,10 +10,10 @@ export default function TeamSection({ourTeam}: OurTeamProps) {
     <div className='about-team-section'>
       <div className='team-head-section'>
         {ourTeam.title_h2 && (
-          <h2 {...ourTeam.$.title_h2}>{ourTeam.title_h2}</h2>
+          <h2 {...ourTeam.$?.title_h2}>{ourTeam.title_h2}</h2>
         )}
         {ourTeam.description ? (
-          <p {...ourTeam.$.description}>{ourTeam.description}</p>
+          <p {...ourTeam.$?.description}>{ourTeam.description}</p>
         ) : (
           ''
         )}
@@ -23,15 +23,15 @@ export default function TeamSection({ourTeam}: OurTeamProps) {
           <div className='team-details' key={index}>
             {employee.image && (
               <img
-                {...employee.image.$.url}
+                {...employee.image.$?.url}
                 alt={employee.image.filename}
                 src={employee.image.url}
               />
             )}
             <div className='team-details'>
-              {employee.name && <h3 {...employee.$.name}>{employee.name}</h3>}
+              {employee.name && <h3 {...employee.$?.name}>{employee.name}</h3>}
               {employee.designation && (
-                <p {...employee.$.designation}>{employee.designation}</p>
+                <p {...employee.$?.designation}>{employee.designation}</p>
               )}
             </div>
           </div>

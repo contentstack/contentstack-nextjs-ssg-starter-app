@@ -11,7 +11,7 @@ import { AllEntries } from '../model/entries.model';
 
 type HeaderProp = {
   header: HeaderModel;
-  entries: AllEntries[];
+  entries: AllEntries[] | {};
 };
 
 export default function Header({ header, entries }: HeaderProp) {
@@ -41,10 +41,10 @@ export default function Header({ header, entries }: HeaderProp) {
 
   async function fetchData() {
     try {
-      if (header && entries) {
+      if (header && entries!=={}) {
       console.info('fetching header component live preview data...');
       const headerRes = await getHeaderRes();
-      const newHeader = buildNavigation(entries,headerRes);
+      const newHeader = buildNavigation(entries,headerRes)
       setHeader(newHeader);
     }
     } catch (error) {
@@ -64,7 +64,7 @@ export default function Header({ header, entries }: HeaderProp) {
       <div className='note-div'>
         {headerData?.notification_bar.show_announcement ? (
           typeof headerData.notification_bar.announcement_text === 'string' && (
-            <div {...headerData.notification_bar.$.announcement_text}>
+            <div {...headerData.notification_bar.$?.announcement_text}>
               {parse(headerData.notification_bar.announcement_text)}
             </div>
           )
@@ -82,7 +82,7 @@ export default function Header({ header, entries }: HeaderProp) {
                   src={headerData.logo.url}
                   alt={headerData.title}
                   title={headerData.title}
-                  {...headerData.logo.$.url}
+                  {...headerData.logo.$?.url}
                 />
               </a>
             </Link>
@@ -104,7 +104,7 @@ export default function Header({ header, entries }: HeaderProp) {
                   <li
                     key={list.label}
                     className='nav-li'
-                    {...list.page_reference[0].$.url}
+                    {...list.page_reference[0].$?.url}
                   >
                     <Link href={list.page_reference[0].url}>
                       <a className={className}>{list.label}</a>
