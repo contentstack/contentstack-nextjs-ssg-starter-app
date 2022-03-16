@@ -42,7 +42,7 @@ export interface SectionWithBuckets {
     }[];
     title_h2: string;
     description: string;
-    bucket_tabular:boolean;
+    bucket_tabular: boolean;
 }
 
 export interface FromBlog {
@@ -55,13 +55,13 @@ export interface FromBlog {
         body: string;
         date: string;
         title: string;
-    }[]
+        featured_image: Img
+    }[];
 }
 
 export interface SectionWithCards {
     $: any;
     cards: {
-        $: any;
         title_h3: string;
         description: string;
         call_to_action: Link;
@@ -87,6 +87,15 @@ export interface SectionWithHtmlCode {
     description: string;
     html_code_alignment: string;
 }
+
+export interface Widget {
+    $: any;
+    widget: {
+        title_h2: string;
+        type: string;
+        $: any
+    }
+}
 export interface Page {
     $: any;
     title: string;
@@ -96,13 +105,14 @@ export interface Page {
     locale: string;
     page_components: [
         {
-            section: Section,
-            our_team: OurTeam,
-            from_blog: FromBlog,
-            hero_banner: HeroBanner,
-            section_with_cards: SectionWithCards,
-            section_with_buckets: SectionWithBuckets,
-            section_with_html_code: SectionWithHtmlCode
+            widget: Widget;
+            section: Section;
+            our_team: OurTeam;
+            from_blog: FromBlog;
+            hero_banner: HeroBanner;
+            section_with_cards: SectionWithCards;
+            section_with_buckets: SectionWithBuckets;
+            section_with_html_code: SectionWithHtmlCode;
         }
     ];
 }

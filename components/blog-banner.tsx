@@ -1,6 +1,11 @@
 import React from 'react';
+import { HeroBanner } from '../model/page.model';
 
-export default function BlogBanner({ blog_banner }) {
+interface HeroBannerProps {
+  blog_banner: HeroBanner;
+}
+
+export default function BlogBanner({ blog_banner }: HeroBannerProps) {
   return (
     <div
       className='blog-page-banner'
@@ -13,7 +18,9 @@ export default function BlogBanner({ blog_banner }) {
         style={{ color: blog_banner.text_color || '#222222' }}
       >
         {blog_banner.banner_title && (
-          <h1 className='hero-title' {...blog_banner.$?.banner_title}>{blog_banner.banner_title}</h1>
+          <h1 className='hero-title' {...blog_banner.$?.banner_title}>
+            {blog_banner.banner_title}
+          </h1>
         )}
 
         {blog_banner.banner_description && (

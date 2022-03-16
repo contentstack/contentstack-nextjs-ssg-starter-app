@@ -7,36 +7,64 @@ import { onEntryChange } from '../contentstack-sdk';
 import { getHeaderRes } from '../helper';
 import { HeaderModel } from '../model/header.model';
 import Skeleton from 'react-loading-skeleton';
+import { AllEntries } from '../model/entries.model';
 
 type HeaderProp = {
   header: HeaderModel;
+  entries: AllEntries[] | {};
 };
 
-export default function Header({ header }: HeaderProp) {
+export default function Header({ header, entries }: HeaderProp) {
   const router = useRouter();
-
   const [getHeader, setHeader] = useState(header);
+
+  function buildNavigation(ent, hd) {
+    let newHeader={...hd};
+    if (ent.length!== newHeader.navigation_menu.length) {
+          ent.forEach((entry) => {
+            const hFound = newHeader?.navigation_menu.find(
+              (navLink) => navLink.label === entry.title
+            );
+            if (!hFound) {
+              newHeader.navigation_menu?.push({
+                label: entry.title,
+                page_reference: [
+                  { title: entry.title, url: entry.url, $: entry.$ },
+                ],
+                $:{}
+              });
+            }
+          });
+    }
+    return newHeader
+  }
 
   async function fetchData() {
     try {
+      if (header && entries!=={}) {
       console.info('fetching header component live preview data...');
       const headerRes = await getHeaderRes();
-      setHeader(headerRes);
+      const newHeader = buildNavigation(entries,headerRes)
+      setHeader(newHeader);
+    }
     } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    onEntryChange(() => fetchData());
-  }, []);
+    if (header && entries) {
+      onEntryChange(() => fetchData());
+    }
+  }, [header]);
   const headerData = getHeader ? getHeader : undefined;
+  
   return (
     <header className='header'>
       <div className='note-div'>
         {headerData?.notification_bar.show_announcement ? (
           typeof headerData.notification_bar.announcement_text === 'string' && (
-            <div {...headerData.notification_bar.$.announcement_text}>
+            <div {...headerData.notification_bar.$?.announcement_text}>
               {parse(headerData.notification_bar.announcement_text)}
             </div>
           )
@@ -54,7 +82,7 @@ export default function Header({ header }: HeaderProp) {
                   src={headerData.logo.url}
                   alt={headerData.title}
                   title={headerData.title}
-                  {...headerData.logo.$.url}
+                  {...headerData.logo.$?.url}
                 />
               </a>
             </Link>
@@ -76,7 +104,7 @@ export default function Header({ header }: HeaderProp) {
                   <li
                     key={list.label}
                     className='nav-li'
-                    {...list.page_reference[0].$.label}
+                    {...list.page_reference[0].$?.url}
                   >
                     <Link href={list.page_reference[0].url}>
                       <a className={className}>{list.label}</a>

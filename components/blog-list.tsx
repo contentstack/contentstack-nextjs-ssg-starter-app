@@ -16,6 +16,7 @@ function BlogList({ bloglist }) {
               className='blog-list-img'
               src={bloglist.featured_image.url}
               alt='blog img'
+              {...bloglist.featured_image.$?.url}
             />
           </a>
         </Link>
@@ -24,15 +25,20 @@ function BlogList({ bloglist }) {
         {bloglist.title && (
           <Link href={bloglist.url}>
             <a>
-              <h3>{bloglist.title}</h3>
+              <h3 {...bloglist.$?.title}>{bloglist.title}</h3>
             </a>
           </Link>
         )}
         <p>
-          {moment(bloglist.date).format('ddd, MMM D YYYY')},{' '}
-          <strong>{bloglist.author[0].title}</strong>
+          <strong {...bloglist.$?.date}>
+            {moment(bloglist.date).format('ddd, MMM D YYYY')}
+          </strong>
+          ,{" "}
+          <strong {...bloglist.author[0].$?.title}>
+            {bloglist.author[0].title}
+          </strong>
         </p>
-        {parse(body)}
+        <div {...bloglist.$?.body}>{parse(body)}</div>
         {bloglist.url ? (
           <Link href={bloglist.url}>
             <a>

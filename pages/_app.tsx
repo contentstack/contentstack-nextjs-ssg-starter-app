@@ -1,48 +1,94 @@
-import type { AppProps } from 'next/app';
 import Layout from '../components/layout';
-import useSWR from 'swr';
-import { getHeaderRes, getFooterRes } from '../helper';
+import App from 'next/app';
+import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
-import 'react-loading-skeleton/dist/skeleton.css';
-import '../styles/globals.css';
+import { FooterModel } from '../model/footer.model';
+import { HeaderModel } from '../model/header.model';
+import { AllEntries } from '../model/entries.model';
+import { getHeaderRes, getFooterRes, getAllEntries } from '../helper';
+
 import '../styles/style.css';
 import '../styles/third-party.css';
 import 'nprogress/nprogress.css';
-import DevTools from '../components/devtools';
-import "@contentstack/live-preview-utils/dist/main.css";
+import 'react-loading-skeleton/dist/skeleton.css';
+import '@contentstack/live-preview-utils/dist/main.css';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const { page, post, archivePost, blogPost } = pageProps;
-  const headerResp = useSWR('/header', getHeaderRes);
-  const footerResp = useSWR('/footer', getFooterRes);
-  const blogList = post?.concat(archivePost);
+type Seo = {
+  meta_title: string;
+  meta_description: string;
+  keywords: string;
+  enable_search_indexing: boolean;
+};
 
-  if (headerResp.error || footerResp.error) return 'An error has occurred.';
-  let jsonPreview = {
-    header: headerResp?.data,
-    footer: footerResp?.data,
-    page: page,
+function MyApp(props) {
+  const { Component, pageProps, header,footer,entries } = props
+  const { page, post, archivePost, blogPost } =
+    pageProps;
+    
+  const metaData = (seo: Seo) => {
+    const metaArr = [];
+    for (const key in seo) {
+      if (seo.enable_search_indexing) {
+        //@ts-ignore
+        metaArr.push( <meta
+            name={
+              key.includes('meta_')
+                ? key.split('meta_')[1].toString()
+                : key.toString()
+            }
+            content={seo[key].toString()}
+            key={key}
+          />
+        );
+      }
+    }
+    return metaArr;
   };
-  if (blogList) jsonPreview['blogList'] = blogList;
-  if (blogPost) jsonPreview['blogPost'] = blogPost;
 
+  const blogList = post?.concat(archivePost);
   return (
-    <Layout
-      //@ts-ignore
-      header={headerResp.data}
-      //@ts-ignore
-      footer={footerResp.data}
-      page={page?.seo}
-    >
-      <DevTools response={jsonPreview} />
-      <Component {...pageProps} />
-    </Layout>
+    <>
+      <Head>
+        <meta
+          name='application-name'
+          content='Contentstack-Nextjs-Starter-App'
+        />
+        <meta charSet='utf-8' />
+        <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
+        <meta
+          name='viewport'
+          content='width=device-width,initial-scale=1,minimum-scale=1'
+        />
+        <meta name='theme-color' content='#317EFB' />
+        <title>Contentstack-Nextjs-SSG-Starter-App</title>
+        {page?.seo && page.seo.enable_search_indexing && metaData(page.seo)}
+      </Head>
+      <Layout
+        header={header}
+        footer={footer}
+        page={page}
+        blogPost={blogPost}
+        blogList={blogList}
+        entries={entries}
+      >
+        <Component {...pageProps} />
+      </Layout>
+    </>
   );
 }
+
+MyApp.getInitialProps = async (appContext) => {
+  const appProps = await App.getInitialProps(appContext);
+  const header: HeaderModel = await getHeaderRes();
+  const footer: FooterModel = await getFooterRes();
+  const entries: AllEntries = await getAllEntries();
+  
+  return { ...appProps, header, footer, entries };
+};
 
 export default MyApp;

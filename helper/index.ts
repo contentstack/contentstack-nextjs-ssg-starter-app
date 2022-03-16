@@ -5,12 +5,14 @@ import { FooterModel } from '../model/footer.model';
 import { AllEntries } from '../model/entries.model';
 import { Page } from '../model/page.model';
 import { BlogPostModel } from '../model/blogpost.model';
+import getConfig from 'next/config';
 
-// const liveEdit = process.env.CONTENTSTACK_LIVE_EDIT_TAGS;
+const { publicRuntimeConfig } = getConfig();
+const envConfig = process.env.CONTENTSTACK_API_KEY
+    ? process.env
+    : publicRuntimeConfig;
 
-const liveEdit = true;
-console.log("live edits",typeof liveEdit);
-
+const liveEdit = envConfig.CONTENTSTACK_LIVE_EDIT_TAGS === "true";
 
 export const getHeaderRes = async (): Promise<HeaderModel> => {
     const response: HeaderModel[][] = await Stack.getEntry({
@@ -34,12 +36,12 @@ export const getFooterRes = async (): Promise<FooterModel> => {
 };
 
 export const getAllEntries = async (): Promise<AllEntries> => {
-    const response: AllEntries[] = await Stack.getEntry({
+    const response: AllEntries = await Stack.getEntry({
         contentTypeUid: 'page',
         referenceFieldPath: undefined,
         jsonRtePath: undefined
-    }) as AllEntries[];
-    liveEdit && addEditableTags(response[0], 'page', true);
+    }) as AllEntries;
+    liveEdit && response[0].forEach((entry) => addEditableTags(entry, 'page', true))
     return response[0] as AllEntries;
 };
 
@@ -59,12 +61,12 @@ export const getPageRes = async (entryUrl: string): Promise<Page> => {
 };
 
 export const getBlogListRes = async (): Promise<BlogPostModel[]> => {
-    const response: any = await Stack.getEntry({
+    const response: BlogPostModel = await Stack.getEntry({
         contentTypeUid: 'blog_post',
         referenceFieldPath: ['author', 'related_post'],
         jsonRtePath: ['body'],
-    }) as BlogPostModel[];
-    liveEdit && addEditableTags(response[0], 'blog_post', true);
+    }) as BlogPostModel;
+    liveEdit && response[0].forEach((entry) => addEditableTags(entry, 'blog_post', true));
     return response[0] as BlogPostModel[];
 };
 

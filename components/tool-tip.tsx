@@ -31,10 +31,7 @@ const Tooltip = (props) => {
       onMouseLeave={hideTip}
     >
       {props.children}
-      <div
-        className={`Tooltip-Tip ${props.direction || 'top'}`}
-        ref={toolTipRef}
-      >
+      <div className={`Tooltip-Tip ${props.direction || 'top'}`} ref={toolTipRef}>
         {props.content}
       </div>
     </div>

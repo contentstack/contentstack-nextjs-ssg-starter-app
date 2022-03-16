@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import * as contentstack from 'contentstack';
 import * as Utils from '@contentstack/utils';
 
@@ -31,7 +30,7 @@ const Stack = contentstack.Stack({
     delivery_token: envConfig.CONTENTSTACK_DELIVERY_TOKEN,
     environment: envConfig.CONTENTSTACK_ENVIRONMENT,
     live_preview: {
-        enable: envConfig.CONTENTSTACK_LIVE_PREVIEW === "true",
+        enable: envConfig.CONTENTSTACK_LIVE_PREVIEW === "true" || true,
         management_token: envConfig.CONTENTSTACK_MANAGEMENT_TOKEN,
         host: envConfig.CONTENTSTACK_API_HOST,
     }
@@ -45,7 +44,6 @@ if (envConfig.CONTENTSTACK_API_HOST) {
 ContentstackLivePreview.init({
     //@ts-ignore
     stackSdk: Stack,
-    debug:true,
     clientUrlParams: {
         host: envConfig.CONTENTSTACK_APP_HOST,
     },

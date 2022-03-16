@@ -78,6 +78,7 @@ export const getStaticProps: GetStaticProps = async () => {
   try {
     const resPage: Page = await getPageRes('/blog');
     const resBlog: BlogPostModel[] = await getBlogListRes();
+
     if (!resPage || !resBlog) throw new Error('Not found');
     const archived: BlogPostModel[] = [];
     const blogLists: BlogPostModel[] = [];
@@ -97,7 +98,7 @@ export const getStaticProps: GetStaticProps = async () => {
         archivePost: archived,
         pageUrl: '/blog',
       },
-      revalidate: 10,
+      revalidate: 1000,
     };
   } catch (error) {
     console.error(error);

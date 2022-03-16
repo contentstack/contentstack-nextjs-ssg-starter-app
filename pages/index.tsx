@@ -4,6 +4,7 @@ import { getPageRes } from '../helper';
 import RenderComponents from '../components/render-components';
 import { Page } from '../model/page.model';
 import { onEntryChange } from '../contentstack-sdk';
+import Skeleton from 'react-loading-skeleton';
 
 interface PageProps {
   page: Page;
@@ -16,7 +17,7 @@ const Home: NextPage<PageProps> = ({ page, pageUrl }) => {
   async function fetchData() {
     try {
       console.info('fetching live preview data...');
-      const entryRes = await getPageRes(pageUrl);  
+      const entryRes = await getPageRes(pageUrl);
       setEntry(entryRes);
     } catch (error) {
       console.error(error);
@@ -27,14 +28,16 @@ const Home: NextPage<PageProps> = ({ page, pageUrl }) => {
     onEntryChange(fetchData);
   }, []);
 
-  return (
+  return getEntry ? (
     <RenderComponents
       pageComponents={getEntry}
-      blogPost={undefined}
+      blogPost={null}
       entryUid={getEntry?.uid}
       contentTypeUid='page'
       locale={getEntry?.locale}
     />
+  ) : (
+    <Skeleton />
   );
 };
 
@@ -43,11 +46,12 @@ export default Home;
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const res: Page = await getPageRes('/');
+
     if (!res) throw new Error('Not found');
 
     return {
       props: { page: res, pageUrl: '/' },
-      revalidate: 10,
+      revalidate: 1000,
     };
   } catch (error) {
     console.error(error);
