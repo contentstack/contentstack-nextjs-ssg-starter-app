@@ -1,27 +1,62 @@
-import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { getAllEntries } from '../helper'
+import React, { useState, useEffect } from 'react';
+import type { GetStaticProps, NextPage } from 'next';
+import { getPageRes } from '../helper';
+import RenderComponents from '../components/render-components';
+import { Page } from '../model/page.model';
+import { onEntryChange } from '../contentstack-sdk';
+import Skeleton from 'react-loading-skeleton';
 
-const Home: NextPage = () => {
-  return (
-    <div>
-      home Page
-    </div>
-  )
+interface PageProps {
+  page: Page;
+  pageUrl: string;
 }
 
-export default Home
+const Home: NextPage<PageProps> = ({ page, pageUrl }) => {
+  const [getEntry, setEntry] = useState(page);
 
-export const getStaticProps: GetStaticProps = async context => {
-  return {
-    props: {}, // will be passed to the page component as props
+  async function fetchData() {
+    try {
+      console.info('fetching live preview data...');
+      const entryRes = await getPageRes(pageUrl);
+      setEntry(entryRes);
+    } catch (error) {
+      console.error(error);
+    }
   }
-}
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  let enrtyPaths = await getAllEntries();
-  enrtyPaths = enrtyPaths.map((enrty)=> enrty.url !== "/blog" && {params:{title:enrty.title, url:enrty.url}})
-  return {
-    paths: [{params}],
-    fallback: true // false or 'blocking'
-  };
-}
+  useEffect(() => {
+    onEntryChange(fetchData);
+  }, []);
+
+  return getEntry ? (
+    <RenderComponents
+      pageComponents={getEntry}
+      blogPost={null}
+      entryUid={getEntry?.uid}
+      contentTypeUid='page'
+      locale={getEntry?.locale}
+    />
+  ) : (
+    <Skeleton />
+  );
+};
+
+export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const res: Page = await getPageRes('/');
+
+    if (!res) throw new Error('Not found');
+
+    return {
+      props: { page: res, pageUrl: '/' },
+      revalidate: 1000,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      notFound: true,
+    };
+  }
+};

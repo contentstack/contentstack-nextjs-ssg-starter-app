@@ -4,76 +4,127 @@ import parse from 'html-react-parser';
 import { FooterModel } from '../model/footer.model';
 import { onEntryChange } from '../contentstack-sdk';
 import { getFooterRes } from '../helper';
+import Skeleton from 'react-loading-skeleton';
+import { AllEntries } from '../model/entries.model';
 
 type FooterProp = {
   footer: FooterModel;
+  entries: AllEntries[] | {};
 };
 
-export default function Footer({ footer }: FooterProp) {
+export default function Footer({ footer, entries }: FooterProp) {
   const [getFooter, setFooter] = useState(footer);
+
+  function buildNavigation(ent, ft) {
+    let newFooter = { ...ft };
+    if (ent.length !== newFooter.navigation.link.length) {
+      ent.forEach((entry) => {
+        const fFound = newFooter?.navigation.link.find(
+          (nlink) => nlink.title === entry.title
+        );
+        if (!fFound) {
+          newFooter.navigation.link?.push({
+            title: entry.title,
+            href: entry.url,
+            $: entry.$,
+          });
+        }
+      });
+    }
+    return newFooter;
+  }
 
   async function fetchData() {
     try {
-      console.info('fetching footer component live preview data...');
-      const footerRes = await getFooterRes();
-      setFooter(footerRes[0][0]);
+      if (footer && entries != {}) {
+        console.info('fetching footer component live preview data...');
+        const footerRes = await getFooterRes();
+        const newfooter = buildNavigation(entries, footerRes);
+        setFooter(newfooter);
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    onEntryChange(fetchData);
-  }, []);
+    onEntryChange(() => fetchData());
+  }, [footer]);
+
+  const footerData = getFooter ? getFooter : undefined;
 
   return (
-    getFooter && (
-      <footer>
-        <div className='max-width footer-div'>
-          <div className='col-quarter'>
+    <footer>
+      <div className='max-width footer-div'>
+        <div className='col-quarter'>
+          {footerData && footerData.logo ? (
             <Link href='/'>
               <a className='logo-tag'>
                 <img
-                  src={footer.logo.url}
-                  alt={footer.title}
-                  title={footer.title}
+                  src={footerData.logo.url}
+                  alt={footerData.title}
+                  title={footerData.title}
+                  {...footer.logo.$?.url}
                   className='logo footer-logo'
                 />
               </a>
             </Link>
-          </div>
-          <div className='col-half'>
-            <nav>
-              <ul className='nav-ul'>
-                {getFooter.navigation?.link.map((menu) => (
-                  <li className='footer-nav-li' key={menu.title}>
+          ) : (
+            <Skeleton width={150} />
+          )}
+        </div>
+        <div className='col-half'>
+          <nav>
+            <ul className='nav-ul'>
+              {footerData ? (
+                footerData.navigation.link.map((menu) => (
+                  <li
+                    className='footer-nav-li'
+                    key={menu.title}
+                    {...menu.$?.title}
+                  >
                     <Link href={menu.href}>{menu.title}</Link>
                   </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          <div className='col-quarter social-link'>
-            <div className='social-nav'>
-              {getFooter.social?.social_share.map((social) => (
+                ))
+              ) : (
+                <Skeleton width={300} />
+              )}
+            </ul>
+          </nav>
+        </div>
+        <div className='col-quarter social-link'>
+          <div className='social-nav'>
+            {footerData ? (
+              footerData.social?.social_share.map((social) => (
                 <a
                   href={social.link.href}
                   title={social.link.title}
                   key={social.link.title}
                 >
                   {social.icon && (
-                    <img src={social.icon.url} alt={social.link.title} />
+                    <img
+                      src={social.icon.url}
+                      alt={social.link.title}
+                      {...social.icon.$?.url}
+                    />
                   )}
                 </a>
-              ))}
-            </div>
+              ))
+            ) : (
+              <Skeleton width={200} />
+            )}
           </div>
         </div>
-        <div className='copyright'>
-          {typeof getFooter.copyright === 'string' &&
-            parse(getFooter.copyright)}
+      </div>
+      {footerData && typeof footerData.copyright === 'string' ? (
+        <div className='copyright' {...footer.$?.copyright}>
+          {parse(footerData.copyright)}
         </div>
-      </footer>
-    )
+      ) : (
+        <div className='copyright'>
+          <Skeleton width={500} />
+        </div>
+      )}
+    </footer>
   );
 }
