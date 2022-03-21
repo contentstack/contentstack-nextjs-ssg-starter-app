@@ -13,7 +13,7 @@ About this project: Next.js is a minimalistic framework for server-rendered Reac
 
 ## Live Demo
 
-You can check the [live demo](https://contentstack-nextjs-starter-app.vercel.app) to get first-hand experience of the website.
+You can check the [live demo](https://contentstack-nextjs-ssg-starter-app.vercel.app/) to get first-hand experience of the website.
 
 
 ## Tutorial
