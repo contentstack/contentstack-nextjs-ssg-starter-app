@@ -5,7 +5,7 @@
 
 About Contentstack: Contentstack is a headless CMS with an API-first approach that puts content at the centre. It is designed to simplify the process of publication by separating code from content.
 
-About this project: Next.js is a minimalistic framework for server-rendered React applications.This guide will help you create a starter website built on top of Next.js with minimal steps.
+About this project: Next.js SSG is a minimalistic framework for server-rendered static page React applications.This guide will help you create a starter website built on top of Next.js with minimal steps.
 
 
 
@@ -20,7 +20,7 @@ You can check the [live demo](https://contentstack-nextjs-ssg-starter-app.vercel
 
 We have created an in-depth tutorial on how you can create a Next.js starter website using Contentstack's Node.js SDK and its fetch content from Contentstack.
 
-[Build Website using Next.js and Contentstack](https://www.contentstack.com/docs/developers/sample-apps/build-a-starter-website-using-next-js-and-contentstack/)
+[Build Website using Next.js and Contentstack](https://www.contentstack.com/docs/developers/sample-apps/build-a-starter-website-using-next-js-static-site-generator-and-contentstack/)
 
 
 **More Resources**
@@ -28,12 +28,3 @@ We have created an in-depth tutorial on how you can create a Next.js starter web
 Read Contentstack [docs](https://www.contentstack.com/docs/)
 
 Learn about [Next.js](https://learnnextjs.com/)
-
-
-
-
-
-
-
-
-
