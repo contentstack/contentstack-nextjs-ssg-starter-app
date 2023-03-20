@@ -13,14 +13,14 @@ export default function CardSection(props) {
           )}
           <div className='card-cta'>
             {card.call_to_action.title && card.call_to_action.href && (
-              <Link href={card.call_to_action.href}>
-                <a
-                  {...card.call_to_action.$?.title}
-                  className='btn primary-btn'
-                >
-                  {card.call_to_action.title}
-                </a>
-              </Link>
+              (<Link
+                href={card.call_to_action.href}
+                {...card.call_to_action.$?.title}
+                className='btn primary-btn'>
+
+                {card.call_to_action.title}
+
+              </Link>)
             )}
           </div>
         </div>

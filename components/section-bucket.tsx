@@ -7,7 +7,7 @@ interface SectionBucketProps {
   section: SectionWithBuckets
 }
 
-export default function SectionBucket({section}: SectionBucketProps) {
+export default function SectionBucket({ section }: SectionBucketProps) {
   return (
     <div className='member-main-section'>
       <div className='member-head'>
@@ -43,7 +43,7 @@ export default function SectionBucket({section}: SectionBucketProps) {
                 href={
                   bucket.call_to_action.href ? bucket.call_to_action.href : '#'
                 }
-              >
+                legacyBehavior>
                 {`$?{bucket.call_to_action.title} -->`}
               </Link>
             ) : (
