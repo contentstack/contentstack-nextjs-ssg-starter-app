@@ -38,9 +38,7 @@ export default function HeroBannerComponent({ hero_banner }: HeroProps) {
             href={hero_banner?.call_to_action.href}
             className='btn tertiary-btn'
             {...hero_banner.call_to_action.$?.title}>
-
             {hero_banner?.call_to_action.title}
-
           </Link>)
         ) : (
           ''

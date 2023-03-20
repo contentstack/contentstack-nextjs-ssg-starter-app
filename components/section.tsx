@@ -21,9 +21,7 @@ export default function Sections({ section }: SectionProps) {
             href={section.call_to_action.href}
             className='btn secondary-btn'
             {...section.call_to_action.$?.href}>
-
             {section.call_to_action.title}
-
           </Link>)
         ) : (
           ''
