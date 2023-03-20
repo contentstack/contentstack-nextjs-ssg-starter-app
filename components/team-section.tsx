@@ -1,11 +1,11 @@
 import React from 'react';
 import { OurTeam } from '../model/page.model';
 
-interface OurTeamProps{
-ourTeam: OurTeam
+interface OurTeamProps {
+  ourTeam: OurTeam
 }
 
-export default function TeamSection({ourTeam}: OurTeamProps) {
+export default function TeamSection({ ourTeam }: OurTeamProps) {
   return (
     <div className='about-team-section'>
       <div className='team-head-section'>

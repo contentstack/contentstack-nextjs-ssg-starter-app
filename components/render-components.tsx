@@ -25,7 +25,7 @@ export default function RenderComponents({
   entryUid,
   contentTypeUid,
   locale,
-}:RenderProps) {
+}: RenderProps) {
   return (
     <div
       data-pageref={entryUid}

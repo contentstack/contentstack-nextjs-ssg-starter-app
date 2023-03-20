@@ -14,7 +14,7 @@ export interface HeaderModel {
         }[]
     }[];
     notification_bar: {
-        $:any
+        $: any
         show_announcement: boolean;
         announcement_text: string;
     };
