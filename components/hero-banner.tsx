@@ -34,11 +34,14 @@ export default function HeroBannerComponent({ hero_banner }: HeroProps) {
           ''
         )}
         {hero_banner.call_to_action.title && hero_banner.call_to_action.href ? (
-          <Link href={hero_banner?.call_to_action.href}>
-            <a className='btn tertiary-btn' {...hero_banner.call_to_action.$?.title}>
-              {hero_banner?.call_to_action.title}
-            </a>
-          </Link>
+          (<Link
+            href={hero_banner?.call_to_action.href}
+            className='btn tertiary-btn'
+            {...hero_banner.call_to_action.$?.title}>
+
+            {hero_banner?.call_to_action.title}
+
+          </Link>)
         ) : (
           ''
         )}
