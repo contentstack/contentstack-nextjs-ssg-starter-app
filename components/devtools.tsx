@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import Tooltip from './tool-tip';
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import Tooltip from "./tool-tip";
 
-const DynamicJsonViewer = dynamic(() => import('@textea/json-viewer').then((module) => ({ default: module.JsonViewer })), { ssr: false });
+import { JsonViewer } from "@textea/json-viewer";
 
 function filterObject(inputObject) {
   const unWantedProps = [
-    '_version',
-    'ACL',
+    "_version",
+    "ACL",
     "_owner",
-    '_in_progress',
-    'created_at',
-    'created_by',
-    'updated_at',
-    'updated_by',
-    'publish_details',
+    "_in_progress",
+    "created_at",
+    "created_by",
+    "updated_at",
+    "updated_by",
+    "publish_details",
   ];
   for (const key in inputObject) {
     unWantedProps.includes(key) && delete inputObject[key];
-    if (typeof inputObject[key] !== 'object') {
+    if (typeof inputObject[key] !== "object") {
       continue;
     }
     inputObject[key] = filterObject(inputObject[key]);
@@ -43,71 +43,66 @@ const DevTools = ({ response }) => {
 
   return (
     <div
-      className='modal fade'
-      id='staticBackdrop'
-      data-bs-backdrop='static'
-      data-bs-keyboard='false'
+      className="modal fade"
+      id="staticBackdrop"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
       //@ts-ignore
-      tabIndex='-1'
-      aria-labelledby='staticBackdropLabel'
-      aria-hidden='true'
-      role='dialog'
-    >
+      tabIndex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+      role="dialog">
       <div
-        className='modal-dialog .modal-lg modal-dialog-centered modal-dialog-scrollable'
-        role='document'
-      >
-        <div className='modal-content'>
-          <div className='modal-header'>
-            <h2 className='devtools-modal-title' id='staticBackdropLabel'>
+        className="modal-dialog .modal-lg modal-dialog-centered modal-dialog-scrollable"
+        role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2 className="devtools-modal-title" id="staticBackdropLabel">
               JSON Preview
             </h2>
             <span
-              className='json-copy'
+              className="json-copy"
               onClick={(e) => copyObject(JSON.stringify(filteredJson))}
-              aria-hidden='true'
-            >
+              aria-hidden="true">
               <Tooltip
-                content={forceUpdate === 0 ? 'Copy' : 'Copied'}
+                content={forceUpdate === 0 ? "Copy" : "Copied"}
                 direction="top"
                 dynamic
                 delay={200}
-                status={forceUpdate}
-              >
+                status={forceUpdate}>
                 <img src="/copy.svg" alt="copy icon" />
               </Tooltip>
             </span>
             <button
-              type='button'
-              className='btn-close'
-              data-bs-dismiss='modal'
-              aria-label='Close'
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
             />
           </div>
-          <div className='modal-body'>
+          <div className="modal-body">
             {response ? (
-              <pre id='jsonViewer'>
+              <pre id="jsonViewer">
                 {response && (
-                  <DynamicJsonViewer
+                  <JsonViewer
                     value={filteredJson}
                     defaultInspectDepth={1}
-                    rootName='response'
+                    rootName="response"
                     displayDataTypes={false}
                     enableClipboard={false}
-                    style={{ color: '#C8501E' }}
+                    style={{ color: "#C8501E" }}
                   />
                 )}
               </pre>
             ) : (
-              ''
+              ""
             )}
           </div>
-          <div className='modal-footer'>
+          <div className="modal-footer">
             <button
-              type='button'
-              className='btn tertiary-btn modal-btn'
-              data-bs-dismiss='modal'
-            >
+              type="button"
+              className="btn tertiary-btn modal-btn"
+              data-bs-dismiss="modal">
               Close
             </button>
           </div>
