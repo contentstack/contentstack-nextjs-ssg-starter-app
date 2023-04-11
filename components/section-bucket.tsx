@@ -44,7 +44,7 @@ export default function SectionBucket({ section }: SectionBucketProps) {
                   bucket.call_to_action.href ? bucket.call_to_action.href : '#'
                 }
                 legacyBehavior>
-                {`$?{bucket.call_to_action.title} -->`}
+                {`${bucket.call_to_action.title} -->`}
               </Link>
             ) : (
               ''
