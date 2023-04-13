@@ -1,6 +1,6 @@
-export interface AllEntries{
-    title:string;
-    url:string;
-    uid:string;
+export interface AllEntries {
+    title: string;
+    url: string;
+    uid: string;
     $: any;
 }
