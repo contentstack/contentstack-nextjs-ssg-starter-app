@@ -16,6 +16,7 @@ const {
   CONTENTSTACK_LIVE_PREVIEW,
 } = envConfig;
 
+// basic env validation
 export const isBasicConfigValid = () => {
   return (
     !!CONTENTSTACK_API_KEY &&
@@ -23,6 +24,7 @@ export const isBasicConfigValid = () => {
     !!CONTENTSTACK_ENVIRONMENT
   );
 };
+// Live preview config validation
 export const isLpConfigValid = () => {
   return (
     !!CONTENTSTACK_LIVE_PREVIEW &&
@@ -31,7 +33,7 @@ export const isLpConfigValid = () => {
     !!CONTENTSTACK_APP_HOST
   );
 };
-
+// set region
 const setRegion = (): Region => {
   let region = "US" as keyof typeof Region;
   if (!!CONTENTSTACK_REGION && CONTENTSTACK_REGION !== "us") {
@@ -42,7 +44,7 @@ const setRegion = (): Region => {
   }
   return Region[region];
 };
-
+// set LivePreview config
 const setLivePreviewConfig = (): LivePreview => {
   if (!isLpConfigValid())
     throw new Error("Your LP config is set to true. Please make you have set all required LP config in .env");
@@ -52,7 +54,7 @@ const setLivePreviewConfig = (): LivePreview => {
     host: CONTENTSTACK_API_HOST as string,
   } as LivePreview;
 };
-
+// contentstack sdk initialization
 export const initializeContentStackSdk = (): Stack => {
   if (!isBasicConfigValid())
     throw new Error("Please set you .env file before running starter app");
@@ -68,11 +70,11 @@ export const initializeContentStackSdk = (): Stack => {
   }
   return Stack(stackConfig);
 };
-
+// api host url
 export const customHostUrl = (baseUrl: string): string => {
   return baseUrl.replace("api", "cdn");
 };
-
+// generate prod api urls
 export const generateUrlBasedOnRegion = (): string[] => {
   return Object.keys(Region).map((region) => {
     if (region === "US") {
@@ -81,7 +83,7 @@ export const generateUrlBasedOnRegion = (): string[] => {
     return `${region}-cdn.contentstack.com`;
   });
 };
-
+// prod url validation for custom host
 export const isValidCustomHostUrl = (url: string): boolean => {
   return url ? !generateUrlBasedOnRegion().includes(url) : false;
 };
