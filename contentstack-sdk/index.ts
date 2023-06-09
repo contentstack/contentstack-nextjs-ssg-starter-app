@@ -1,8 +1,11 @@
-import * as contentstack from "contentstack";
 import * as Utils from "@contentstack/utils";
-
 import ContentstackLivePreview from "@contentstack/live-preview-utils";
 import getConfig from "next/config";
+import {
+  customHostUrl,
+  initializeContentStackSdk,
+  isValidCustomHostUrl,
+} from "./utils";
 
 type GetEntry = {
   contentTypeUid: string;
@@ -22,39 +25,31 @@ const envConfig = process.env.CONTENTSTACK_API_KEY
   ? process.env
   : publicRuntimeConfig;
 
-const Stack = contentstack.Stack({
-  api_key: envConfig.CONTENTSTACK_API_KEY
-    ? envConfig.CONTENTSTACK_API_KEY
-    : envConfig.NEXT_PUBLIC_CONTENTSTACK_API_KEY,
-  delivery_token: envConfig.CONTENTSTACK_DELIVERY_TOKEN,
-  environment: envConfig.CONTENTSTACK_ENVIRONMENT,
-  branch: envConfig.CONTENTSTACK_BRANCH
-    ? envConfig.CONTENTSTACK_BRANCH
-    : "main",
-  region: envConfig.CONTENTSTACK_REGION ? envConfig.CONTENTSTACK_REGION : "us",
-  live_preview: {
-    enable: envConfig.CONTENTSTACK_LIVE_PREVIEW === "true" || true,
-    management_token: envConfig.CONTENTSTACK_MANAGEMENT_TOKEN,
-    host: envConfig.CONTENTSTACK_API_HOST,
-  },
-});
+let customHostBaseUrl = envConfig.CONTENTSTACK_API_HOST as string;
+customHostBaseUrl = customHostUrl(customHostBaseUrl);
 
-if (envConfig.CONTENTSTACK_API_HOST) {
-  Stack.setHost(envConfig.CONTENTSTACK_API_HOST);
+// SDK initialization
+const Stack = initializeContentStackSdk();
+
+// set host url only for custom host or non prod base url's
+if (isValidCustomHostUrl(customHostBaseUrl)) {
+  Stack.setHost(customHostBaseUrl);
 }
 
-ContentstackLivePreview.init({
-  //@ts-ignore
-  stackSdk: Stack,
-  clientUrlParams: {
-    host: envConfig.CONTENTSTACK_APP_HOST,
-  },
-  stackDetails: {
-    apiKey: envConfig.CONTENTSTACK_API_KEY,
-    environment: envConfig.CONTENTSTACK_ENVIRONMENT,
-  },
-  ssr: false,
-});
+// Setting LP if enabled
+  ContentstackLivePreview.init({
+    //@ts-ignore
+    stackSdk: Stack,
+    clientUrlParams: {
+      host: envConfig.CONTENTSTACK_APP_HOST,
+    },
+    stackDetails: {
+      apiKey: envConfig.CONTENTSTACK_API_KEY,
+      environment: envConfig.CONTENTSTACK_ENVIRONMENT,
+    },
+    enable: envConfig.CONTENTSTACK_LIVE_PREVIEW === "true",
+    ssr: false,
+  })?.catch((err) => console.error(err));
 
 export const { onEntryChange } = ContentstackLivePreview;
 
@@ -76,7 +71,6 @@ export default {
       const query = Stack.ContentType(contentTypeUid).Query();
       if (referenceFieldPath) query.includeReference(referenceFieldPath);
       query
-        .includeOwner()
         .toJSON()
         .find()
         .then(
@@ -114,7 +108,7 @@ export default {
     return new Promise((resolve, reject) => {
       const blogQuery = Stack.ContentType(contentTypeUid).Query();
       if (referenceFieldPath) blogQuery.includeReference(referenceFieldPath);
-      blogQuery.includeOwner().toJSON();
+      blogQuery.toJSON();
       const data = blogQuery.where("url", `${entryUrl}`).find();
       data.then(
         (result) => {
