@@ -13,11 +13,13 @@ const nextConfig = {
     CONTENTSTACK_ENVIRONMENT: process.env.CONTENTSTACK_ENVIRONMENT,
     CONTENTSTACK_BRANCH: process.env.CONTENTSTACK_BRANCH || "main",
     CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION || "us",
-    CONTENTSTACK_MANAGEMENT_TOKEN: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
+    CONTENTSTACK_PREVIEW_TOKEN: process.env.CONTENTSTACK_PREVIEW_TOKEN,
     CONTENTSTACK_API_HOST:
       process.env.CONTENTSTACK_API_HOST || "api.contentstack.io",
     CONTENTSTACK_APP_HOST:
       process.env.CONTENTSTACK_APP_HOST || "app.contentstack.com",
+    CONTENTSTACK_PREVIEW_HOST:
+      process.env.CONTENTSTACK_PREVIEW_HOST || "rest-preview.contentstack.com",
     NEXT_PUBLIC_CONTENTSTACK_API_KEY: process.env.CONTENTSTACK_API_KEY,
     CONTENTSTACK_LIVE_PREVIEW: process.env.CONTENTSTACK_LIVE_PREVIEW || "true",
     CONTENTSTACK_LIVE_EDIT_TAGS:
@@ -29,6 +31,7 @@ const nextConfig = {
   pwa: {
     dest: "public",
   },
+  experimental: { largePageDataBytes: 128 * 100000 },
 };
 
 module.exports =
