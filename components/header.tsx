@@ -8,6 +8,7 @@ import { getHeaderRes } from '../helper';
 import { HeaderModel } from '../model/header.model';
 import Skeleton from 'react-loading-skeleton';
 import { AllEntries } from '../model/entries.model';
+import { isEmpty } from 'lodash';
 
 type HeaderProp = {
   header: HeaderModel;
@@ -19,34 +20,34 @@ export default function Header({ header, entries }: HeaderProp) {
   const [getHeader, setHeader] = useState(header);
 
   function buildNavigation(ent, hd) {
-    let newHeader={...hd};
-    if (ent.length!== newHeader.navigation_menu.length) {
-          ent.forEach((entry) => {
-            const hFound = newHeader?.navigation_menu.find(
-              (navLink) => navLink.label === entry.title
-            );
-            if (!hFound) {
-              newHeader.navigation_menu?.push({
-                label: entry.title,
-                page_reference: [
-                  { title: entry.title, url: entry.url, $: entry.$ },
-                ],
-                $:{}
-              });
-            }
+    let newHeader = { ...hd };
+    if (ent.length !== newHeader.navigation_menu.length) {
+      ent.forEach((entry) => {
+        const hFound = newHeader?.navigation_menu.find(
+          (navLink) => navLink.label === entry.title
+        );
+        if (!hFound) {
+          newHeader.navigation_menu?.push({
+            label: entry.title,
+            page_reference: [
+              { title: entry.title, url: entry.url, $: entry.$ },
+            ],
+            $: {}
           });
+        }
+      });
     }
     return newHeader
   }
 
   async function fetchData() {
     try {
-      if (header && entries!=={}) {
-      console.info('fetching header component live preview data...');
-      const headerRes = await getHeaderRes();
-      const newHeader = buildNavigation(entries,headerRes)
-      setHeader(newHeader);
-    }
+      if (header && isEmpty(entries)) {
+        console.info('fetching header component live preview data...');
+        const headerRes = await getHeaderRes();
+        const newHeader = buildNavigation(entries, headerRes)
+        setHeader(newHeader);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -58,7 +59,7 @@ export default function Header({ header, entries }: HeaderProp) {
     }
   }, [header]);
   const headerData = getHeader ? getHeader : undefined;
-  
+
   return (
     <header className='header'>
       <div className='note-div'>

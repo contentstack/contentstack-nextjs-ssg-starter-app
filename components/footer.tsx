@@ -6,6 +6,7 @@ import { onEntryChange } from '../contentstack-sdk';
 import { getFooterRes } from '../helper';
 import Skeleton from 'react-loading-skeleton';
 import { AllEntries } from '../model/entries.model';
+import { isEmpty } from 'lodash';
 
 type FooterProp = {
   footer: FooterModel;
@@ -36,7 +37,7 @@ export default function Footer({ footer, entries }: FooterProp) {
 
   async function fetchData() {
     try {
-      if (footer && entries != {}) {
+      if (footer && !isEmpty(entries)) {
         console.info('fetching footer component live preview data...');
         const footerRes = await getFooterRes();
         const newfooter = buildNavigation(entries, footerRes);
