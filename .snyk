@@ -1,0 +1,40 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-NEXT-15104645:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:12:47.216Z
+        created: 2026-02-24T12:12:47.218Z
+  SNYK-JS-AJV-15274295:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:12:51.660Z
+        created: 2026-02-24T12:12:51.663Z
+  SNYK-JS-INFLIGHT-6095116:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:12:55.895Z
+        created: 2026-02-24T12:12:55.898Z
+  SNYK-JS-LODASH-15053838:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:13:00.299Z
+        created: 2026-02-24T12:13:00.303Z
+  SNYK-JS-MINIMATCH-15309438:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:13:04.323Z
+        created: 2026-02-24T12:13:04.326Z
+  SNYK-JS-QS-14724253:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:13:08.527Z
+        created: 2026-02-24T12:13:08.531Z
+  SNYK-JS-QS-15268416:
+    - '*':
+        reason: 'https://contentstack.atlassian.net/browse/IS-6640'
+        expires: 2026-03-26T12:13:13.094Z
+        created: 2026-02-24T12:13:13.102Z
+patch: {}
